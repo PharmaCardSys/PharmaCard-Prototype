@@ -1,12 +1,17 @@
 import "./App.css";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Pages Here
+import Dashboard from "./pages/Dashboard";
 
 function App() {
     return (
-        <>
-            <div className="bg-blue-500 text-white p-4 rounded-lg shadow-md">
-                <h1 className="text-xl font-bold">Pharma Card App</h1>
-            </div>
-        </>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 
