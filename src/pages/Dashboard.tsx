@@ -101,7 +101,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Displayer with Image */}
-                <div className="container mx-auto flex flex-col md:flex-row items-start gap-12 mt-16 mb-24 px-4">
+                <div className="container flex flex-col md:flex-row items-start md:justify-center gap-12 mt-16 mb-24 md:px-0 px-8">
                     {/* Text */}
                     <div className="flex flex-col gap-6 md:w-1/2">
                         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
@@ -125,7 +125,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Image */}
-                    <div className="md:w-1/2 flex justify-center">
+                    <div className="flex justify-center">
                         <img
                             src={rfcimage}
                             alt="PharmaCard NFC"
