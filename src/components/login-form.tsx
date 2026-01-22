@@ -21,7 +21,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card className="bg-[#F8F5F1] border-[#E1DFE1] shadow-sm">
+            <Card className="bg-white border-[#E1DFE1] shadow-sm">
                 <CardHeader className="text-center">
                     <CardTitle className="text-[#214662] text-2xl">
                         Login to your account
@@ -92,7 +92,7 @@ export function LoginForm({
                                 <FieldDescription className="text-center text-[#214662]/70">
                                     Don&apos;t have an account?{" "}
                                     <a
-                                        href="#"
+                                        href="/register"
                                         className="text-[#214662] font-medium hover:underline"
                                     >
                                         Sign up
