@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+    const navigate = useNavigate();
+
     return (
         <>
             {/* Header */}
@@ -23,6 +26,7 @@ export default function Header() {
                         <Button
                             variant="secondary"
                             className="text-sm text-[#214662]"
+                            onClick={() => navigate("/login")}
                         >
                             Login
                         </Button>
