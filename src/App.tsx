@@ -6,15 +6,31 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
+// Components Here
+import { Toaster } from "@/components/ui/sonner";
+import ProtectedRoute from "./protected/ProtectedRoute";
+import WritePrescription from "./pages/WritePrescription";
+
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-            </Routes>
-        </BrowserRouter>
+        <>
+            <Toaster />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/write-prescription"
+                        element={
+                            <ProtectedRoute>
+                                <WritePrescription />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </BrowserRouter>
+        </>
     );
 }
 
