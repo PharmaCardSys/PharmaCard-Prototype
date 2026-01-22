@@ -2,8 +2,11 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Button } from "@/components/ui/button";
 import rfcimage from "../assets/images/rfc.webp";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+    const navigate = useNavigate();
+
     return (
         <>
             {/* Whole Container */}
@@ -30,12 +33,14 @@ export default function Dashboard() {
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
+                            onClick={() => navigate("/login")}
                         >
                             Write Prescription
                         </Button>
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
+                            onClick={() => navigate("/login")}
                         >
                             Pharmacist Access
                         </Button>
