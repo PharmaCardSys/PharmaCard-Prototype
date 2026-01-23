@@ -3,9 +3,33 @@ import Footer from "./components/Footer";
 import { Button } from "@/components/ui/button";
 import rfcimage from "../assets/images/rfc.webp";
 import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../firebase/firebaseconfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { useState, useEffect } from "react";
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const [userData, setUserData] = useState<any>(null);
+
+    // Fetch user data
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                setUserData(null);
+                return;
+            }
+
+            const userRef = doc(db, "users", user.uid);
+            const snap = await getDoc(userRef);
+
+            if (snap.exists()) {
+                setUserData(snap.data());
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     return (
         <>
@@ -33,14 +57,21 @@ export default function Dashboard() {
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
-                            onClick={() => navigate("/login")}
+                            onClick={() =>
+                                navigate(
+                                    userData ? "/write-prescription" : "/login",
+                                )
+                            }
                         >
                             Write Prescription
                         </Button>
+
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
-                            onClick={() => navigate("/login")}
+                            onClick={() =>
+                                navigate(userData ? "/checkout-rx" : "/login")
+                            }
                         >
                             Pharmacist Access
                         </Button>
