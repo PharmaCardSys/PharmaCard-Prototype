@@ -41,8 +41,6 @@ export default function Header() {
         toast.success("Signed out successfully");
     };
 
-    console.log(userData);
-
     return (
         <>
             {/* Header */}
