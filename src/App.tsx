@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./protected/ProtectedRoute";
 import WritePrescription from "./pages/WritePrescription";
+import CheckoutRx from "./pages/CheckoutRx";
 
 function App() {
     return (
@@ -25,6 +26,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <WritePrescription />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/checkout-rx"
+                        element={
+                            <ProtectedRoute>
+                                <CheckoutRx />
                             </ProtectedRoute>
                         }
                     />
