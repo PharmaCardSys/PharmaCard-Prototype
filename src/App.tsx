@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./protected/ProtectedRoute";
 import WritePrescription from "./pages/WritePrescription";
 import CheckoutRx from "./pages/CheckoutRx";
+import Prescription from "./pages/Prescription";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    <Route path="/prescription" element={<Prescription />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route
