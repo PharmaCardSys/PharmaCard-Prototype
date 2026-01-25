@@ -47,6 +47,8 @@ export default function WritePrescription({ user }: Props) {
     const [patientSex, setPatientSex] = useState("");
     const [patientAddress, setPatientAddress] = useState("");
     const navigate = useNavigate();
+    const [showLinkModal, setShowLinkModal] = useState(false);
+    const [generatedLink, setGeneratedLink] = useState("");
 
     const addMedicine = () => {
         setMedicines([
@@ -103,7 +105,6 @@ export default function WritePrescription({ user }: Props) {
         if (!user) return;
 
         try {
-            // Build prescription list
             const prescriptionList = medicines.map((med) => ({
                 medicineName: med.name,
                 dosage: med.dosage,
@@ -111,37 +112,46 @@ export default function WritePrescription({ user }: Props) {
                 duration: med.duration,
             }));
 
-            // Create prescription document
             const prescriptionRef = await addDoc(
                 collection(db, "prescriptions"),
                 {
                     hospitalName,
-                    hospitalLogo, // base64
+                    hospitalLogo,
                     patientName,
                     patientAge,
                     patientSex,
                     patientAddress,
-                    patientImage, // base64
+                    patientImage,
 
                     prescriptionList,
 
                     prescribedBy: `${user.name} ${user.middleName} ${user.lastName}`,
                     prescribedId: user.uid,
 
+                    status: false, // ✅ pending validation
                     createdAt: serverTimestamp(),
                 },
             );
 
-            // Push prescription ID to user document
             await updateDoc(doc(db, "users", user.uid), {
                 createdPrescription: arrayUnion(prescriptionRef.id),
             });
 
-            alert("Prescription created successfully!");
+            // Generate public link
+            const link = `${window.location.origin}/prescription?pid=${prescriptionRef.id}`;
+            setGeneratedLink(link);
+            setShowLinkModal(true);
+
+            toast.success("Prescription created successfully!");
         } catch (error) {
             console.error("Error creating prescription:", error);
-            alert("Failed to create prescription");
+            toast.error("Failed to create prescription");
         }
+    };
+
+    const handleCopyLink = async () => {
+        await navigator.clipboard.writeText(generatedLink);
+        toast.success("Prescription link copied!");
     };
 
     useEffect(() => {
@@ -402,6 +412,51 @@ export default function WritePrescription({ user }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Modal */}
+            {showLinkModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/30"
+                        onClick={() => setShowLinkModal(false)}
+                    />
+
+                    {/* Modal */}
+                    <div className="relative bg-white w-full max-w-md mx-4 rounded-xl shadow-lg p-6 z-10">
+                        <h2 className="text-lg font-semibold text-center mb-2">
+                            Prescription Created
+                        </h2>
+
+                        <p className="text-sm text-gray-500 text-center mb-4">
+                            Share this link with the patient or pharmacist to
+                            verify the prescription.
+                        </p>
+
+                        {/* Link Box */}
+                        <div className="bg-[#F8F5F1] border rounded-lg p-3 text-sm break-all text-[#214662]">
+                            {generatedLink}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="mt-6 flex justify-end gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowLinkModal(false)}
+                            >
+                                Close
+                            </Button>
+
+                            <Button
+                                className="bg-[#214662] text-white"
+                                onClick={handleCopyLink}
+                            >
+                                Copy Link
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

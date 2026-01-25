@@ -35,15 +35,29 @@ export default function CheckoutRx({ user }: Props) {
     const extractPrescriptionId = (input: string) => {
         if (!input) return null;
 
-        // If input already looks like a Firestore ID
-        if (!input.includes("?") && !input.includes("/")) {
-            return input.trim();
+        let decoded = input.trim();
+
+        // 1️⃣ Decode NFC / URL-encoded strings (pid%3D → pid=)
+        try {
+            decoded = decodeURIComponent(decoded);
+        } catch {
+            // ignore decode errors
         }
 
-        // Try to find pid= anywhere in the string
-        const match = input.match(/[?&]pid=([^&]+)/);
+        // 2️⃣ Plain Firestore ID pasted
+        if (
+            !decoded.includes("/") &&
+            !decoded.includes("?") &&
+            !decoded.includes("=")
+        ) {
+            return decoded;
+        }
 
-        return match ? match[1] : null;
+        // 3️⃣ Normal query param ?pid=XXXX
+        const match = decoded.match(/[?&]pid=([^&]+)/);
+        if (match) return match[1];
+
+        return null;
     };
 
     const fetchPrescription = async () => {
