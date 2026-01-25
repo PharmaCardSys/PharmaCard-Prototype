@@ -3,11 +3,11 @@ import Header from "./components/Header";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfig";
 
-type InputMode = "search" | "link";
+// type InputMode = "search" | "link";
 
 export default function Prescription() {
     // Default to LINK since search is not implemented
-    const [mode, setMode] = useState<InputMode>("link");
+    // const [mode, setMode] = useState<InputMode>("link");
     const [value, setValue] = useState("");
 
     const [prescription, setPrescription] = useState<any>(null);
