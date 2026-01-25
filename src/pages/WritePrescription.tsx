@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import Header from "./components/Header";
@@ -12,6 +12,8 @@ import {
     serverTimestamp,
     arrayUnion,
 } from "firebase/firestore";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     user?: User & {
@@ -44,6 +46,7 @@ export default function WritePrescription({ user }: Props) {
     const [patientAge, setPatientAge] = useState("");
     const [patientSex, setPatientSex] = useState("");
     const [patientAddress, setPatientAddress] = useState("");
+    const navigate = useNavigate();
 
     const addMedicine = () => {
         setMedicines([
@@ -140,6 +143,14 @@ export default function WritePrescription({ user }: Props) {
             alert("Failed to create prescription");
         }
     };
+
+    useEffect(() => {
+        if (!user) return;
+
+        if (user.role !== "Doctor") {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     return (
         <div className="w-full min-h-screen bg-[#F8F5F1] text-[#214662] flex flex-col items-center">
@@ -252,56 +263,56 @@ export default function WritePrescription({ user }: Props) {
 
                                     <input
                                         type="text"
-                                        placeholder="Medicine name"
-                                        className="border rounded p-2 text-sm"
+                                        placeholder="MEDICINE NAME"
+                                        className="border rounded p-2 text-sm uppercase"
                                         value={med.name}
                                         onChange={(e) =>
                                             updateMedicine(
                                                 index,
                                                 "name",
-                                                e.target.value,
+                                                e.target.value.toUpperCase(),
                                             )
                                         }
                                     />
 
                                     <input
                                         type="text"
-                                        placeholder="Dosage (e.g. 500mg)"
-                                        className="border rounded p-2 text-sm"
+                                        placeholder="DOSAGE (E.G. 500MG)"
+                                        className="border rounded p-2 text-sm uppercase"
                                         value={med.dosage}
                                         onChange={(e) =>
                                             updateMedicine(
                                                 index,
                                                 "dosage",
-                                                e.target.value,
+                                                e.target.value.toUpperCase(),
                                             )
                                         }
                                     />
 
                                     <input
                                         type="text"
-                                        placeholder="Frequency (e.g. 2x a day)"
-                                        className="border rounded p-2 text-sm"
+                                        placeholder="FREQUENCY (E.G. 2X A DAY)"
+                                        className="border rounded p-2 text-sm uppercase"
                                         value={med.frequency}
                                         onChange={(e) =>
                                             updateMedicine(
                                                 index,
                                                 "frequency",
-                                                e.target.value,
+                                                e.target.value.toUpperCase(),
                                             )
                                         }
                                     />
 
                                     <input
                                         type="text"
-                                        placeholder="Duration (e.g. 7 days)"
-                                        className="border rounded p-2 text-sm"
+                                        placeholder="DURATION (E.G. 7 DAYS)"
+                                        className="border rounded p-2 text-sm uppercase"
                                         value={med.duration}
                                         onChange={(e) =>
                                             updateMedicine(
                                                 index,
                                                 "duration",
-                                                e.target.value,
+                                                e.target.value.toUpperCase(),
                                             )
                                         }
                                     />
@@ -347,7 +358,7 @@ export default function WritePrescription({ user }: Props) {
                     <div className="space-y-3">
                         <input
                             type="text"
-                            placeholder="Full Name"
+                            placeholder="FULL NAME"
                             value={patientName}
                             onChange={(e) => setPatientName(e.target.value)}
                             className="w-full border rounded p-2 text-sm"
@@ -355,7 +366,7 @@ export default function WritePrescription({ user }: Props) {
 
                         <input
                             type="number"
-                            placeholder="Age"
+                            placeholder="AGE"
                             value={patientAge}
                             onChange={(e) => setPatientAge(e.target.value)}
                             className="w-1/2 border rounded p-2 text-sm"
@@ -366,14 +377,14 @@ export default function WritePrescription({ user }: Props) {
                             onChange={(e) => setPatientSex(e.target.value)}
                             className="w-1/2 border rounded p-2 text-sm text-gray-600"
                         >
-                            <option value="">Sex</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="">SEX</option>
+                            <option value="MALE">MALE</option>
+                            <option value="FEMALE">FEMALE</option>
                         </select>
 
                         <input
                             type="text"
-                            placeholder="Address (optional)"
+                            placeholder="ADDRESS (optional)"
                             value={patientAddress}
                             onChange={(e) => setPatientAddress(e.target.value)}
                             className="w-full border rounded p-2 text-sm"
