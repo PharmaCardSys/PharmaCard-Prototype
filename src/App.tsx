@@ -15,7 +15,7 @@ import CheckoutRx from "./pages/CheckoutRx";
 function App() {
     return (
         <>
-            <Toaster />
+            <Toaster position="top-center" />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />

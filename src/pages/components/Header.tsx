@@ -47,7 +47,10 @@ export default function Header() {
             <div className="w-full bg-[#214662] text-[#F8F5F1] shadow-md flex items-center justify-between">
                 <div className="container mx-auto p-4 flex md:flex-row items-center md:items-start justify-between gap-8">
                     <div>
-                        <p className="text-lg md:text-xl text-[#B4C4D0]">
+                        <p
+                            className="text-lg md:text-xl text-[#B4C4D0] cursor-pointer font-semibold"
+                            onClick={() => navigate("/")}
+                        >
                             PharmaCard
                         </p>
                     </div>

@@ -4,8 +4,23 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfig"; // adjust path if needed
+import type { User } from "firebase/auth";
+import { useEffect } from "react";
 
-export default function CheckoutRx() {
+interface Props {
+    user?: User & {
+        role: "Doctor" | "Pharmacist";
+        name: string;
+        createdAt: unknown;
+        email: string | null;
+        lastName: string;
+        middleName: string;
+    };
+}
+
+export default function CheckoutRx({ user }: Props) {
+    if (!user) return null;
+
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
     const [prescriptionLink, setPrescriptionLink] = useState("");
@@ -82,6 +97,14 @@ export default function CheckoutRx() {
             console.error("Failed to validate prescription:", error);
         }
     };
+
+    useEffect(() => {
+        if (!user) return;
+
+        if (user.role !== "Pharmacist") {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     return (
         <div className="w-full min-h-screen bg-[#F8F5F1] text-[#214662] flex flex-col items-center">

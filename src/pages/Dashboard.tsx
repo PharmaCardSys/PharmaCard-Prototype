@@ -7,6 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase/firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -30,6 +31,34 @@ export default function Dashboard() {
 
         return () => unsubscribe();
     }, []);
+
+    const handleWritePrescription = () => {
+        if (!userData) {
+            navigate("/login");
+            return;
+        }
+
+        if (userData.role !== "Doctor") {
+            toast.warning("You don't have permission to access this.");
+            return;
+        }
+
+        navigate("/write-prescription");
+    };
+
+    const handlePharmacistAccess = () => {
+        if (!userData) {
+            navigate("/login");
+            return;
+        }
+
+        if (userData.role !== "Pharmacist") {
+            toast.warning("You don't have permission to access this.");
+            return;
+        }
+
+        navigate("/checkout-rx");
+    };
 
     return (
         <>
@@ -57,11 +86,7 @@ export default function Dashboard() {
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
-                            onClick={() =>
-                                navigate(
-                                    userData ? "/write-prescription" : "/login",
-                                )
-                            }
+                            onClick={handleWritePrescription}
                         >
                             Write Prescription
                         </Button>
@@ -69,9 +94,7 @@ export default function Dashboard() {
                         <Button
                             variant="default"
                             className="bg-[#214662] text-white hover:bg-[#214662]/80"
-                            onClick={() =>
-                                navigate(userData ? "/checkout-rx" : "/login")
-                            }
+                            onClick={handlePharmacistAccess}
                         >
                             Pharmacist Access
                         </Button>
