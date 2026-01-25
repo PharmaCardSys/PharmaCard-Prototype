@@ -60,6 +60,7 @@ export default function Header() {
                         <Button
                             variant="link"
                             className="text-sm text-[#E1DFE1]"
+                            onClick={() => navigate("/prescription")}
                         >
                             View Prescription
                         </Button>
