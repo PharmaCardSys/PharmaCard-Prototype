@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase/firebaseconfig"; // adjust path if needed
+import { db } from "../firebase/firebaseconfig";
 import type { User } from "firebase/auth";
 import { useEffect } from "react";
 
