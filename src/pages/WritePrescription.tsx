@@ -105,39 +105,42 @@ export default function WritePrescription({ user }: Props) {
         if (!user) return;
 
         try {
-            const prescriptionList = medicines.map((med) => ({
-                medicineName: med.name,
-                dosage: med.dosage,
-                frequency: med.frequency,
-                duration: med.duration,
-            }));
+            const prescriptionEntry = {
+                hospitalName,
+                hospitalLogo,
+                prescribedBy: `${user.name} ${user.middleName} ${user.lastName}`,
+                prescribedId: user.uid,
+                status: false, // pending validation
+                createdAt: Date.now(),
+                prescriptionList: medicines.map((med) => ({
+                    medicineName: med.name,
+                    dosage: med.dosage,
+                    frequency: med.frequency,
+                    duration: med.duration,
+                })),
+            };
 
+            // Create ONE document per patient
             const prescriptionRef = await addDoc(
                 collection(db, "prescriptions"),
                 {
-                    hospitalName,
-                    hospitalLogo,
                     patientName,
                     patientAge,
                     patientSex,
                     patientAddress,
                     patientImage,
 
-                    prescriptionList,
-
-                    prescribedBy: `${user.name} ${user.middleName} ${user.lastName}`,
-                    prescribedId: user.uid,
-
-                    status: false, // ✅ pending validation
-                    createdAt: serverTimestamp(),
+                    // store prescriptions here
+                    mainPrescription: [prescriptionEntry],
                 },
             );
 
+            // Track created prescription doc on doctor
             await updateDoc(doc(db, "users", user.uid), {
                 createdPrescription: arrayUnion(prescriptionRef.id),
             });
 
-            // Generate public link
+            // Public link
             const link = `${window.location.origin}/prescription?pid=${prescriptionRef.id}`;
             setGeneratedLink(link);
             setShowLinkModal(true);
