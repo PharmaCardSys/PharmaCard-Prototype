@@ -50,7 +50,7 @@ export default function WritePrescription({ user }: Props) {
     const [generatedLink, setGeneratedLink] = useState("");
     const [open, setOpen] = useState(false);
     const [prescriptionLink, setPrescriptionLink] = useState("");
-    const [rx, setRx] = useState<any | null>(null);
+    // const [rx, setRx] = useState<any | null>(null); I dont what this does lol!
     const [previousPrescriptions, setPreviousPrescriptions] = useState<any[]>(
         [],
     );
@@ -121,7 +121,7 @@ export default function WritePrescription({ user }: Props) {
             });
 
             //  latest prescription (highest index / newest)
-            setRx(orderedPrescriptions[0]);
+            // setRx(orderedPrescriptions[0]);
 
             // ALL previous prescriptions (can be many)
             setPreviousPrescriptions(orderedPrescriptions.reverse());
