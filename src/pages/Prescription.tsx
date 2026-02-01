@@ -11,7 +11,6 @@ export default function Prescription() {
     const [value, setValue] = useState("");
 
     const [prescription, setPrescription] = useState<any>(null);
-    const [validated, setValidated] = useState<boolean>(false);
 
     const displayValue = (value?: string) =>
         value && value.trim() !== "" ? value : "NOT SPECIFIED";
@@ -70,8 +69,6 @@ export default function Prescription() {
                 latestPrescription: latest,
             });
 
-            setValidated(!!latest?.status);
-
         } catch (error) {
             console.error("Error fetching prescription:", error);
         }
@@ -111,7 +108,6 @@ export default function Prescription() {
                     ...snap.data(),
                 });
 
-                setValidated(!!snap.data().status);
             } catch (err) {
                 console.error("Auto-fetch failed:", err);
             }
