@@ -50,6 +50,9 @@ export default function WritePrescription({ user }: Props) {
     const [generatedLink, setGeneratedLink] = useState("");
     const [open, setOpen] = useState(false);
     const [prescriptionLink, setPrescriptionLink] = useState("");
+    const [additionalInstructions, setAdditionalInstructions] = useState("");
+    const [approximatePrice, setApproximatePrice] = useState("");
+
     // const [rx, setRx] = useState<any | null>(null); I dont what this does lol!
     const [previousPrescriptions, setPreviousPrescriptions] = useState<any[]>(
         [],
@@ -220,6 +223,8 @@ export default function WritePrescription({ user }: Props) {
                 prescribedId: user.uid,
                 status: false,
                 createdAt: Date.now(),
+                additionalInstructions,
+                approximatePrice,
                 prescriptionList: medicines.map((med) => ({
                     medicineName: med.name,
                     dosage: med.dosage,
@@ -293,6 +298,8 @@ export default function WritePrescription({ user }: Props) {
                 prescribedId: user.uid,
                 status: false,
                 createdAt: Date.now(),
+                additionalInstructions,
+                approximatePrice,
                 prescriptionList: medicines.map((med) => ({
                     medicineName: med.name,
                     dosage: med.dosage,
@@ -528,6 +535,30 @@ export default function WritePrescription({ user }: Props) {
                                             />
                                         </div>
                                     ))}
+                                    {/* Additional Instructions */}
+                                    <input
+                                        type="text"
+                                        className="border rounded p-2 text-sm uppercase w-full"
+                                        placeholder="Additional Instructions (optional)"
+                                        value={additionalInstructions}
+                                        onChange={(e) =>
+                                            setAdditionalInstructions(
+                                                e.target.value.toUpperCase(),
+                                            )
+                                        }
+                                    />
+                                    {/* Approximate Price */}
+                                    <input
+                                        type="text"
+                                        className="border rounded p-2 text-sm uppercase w-full"
+                                        placeholder="Approximate Price (optional)"
+                                        value={approximatePrice}
+                                        onChange={(e) =>
+                                            setApproximatePrice(
+                                                e.target.value.toUpperCase(),
+                                            )
+                                        }
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -632,6 +663,26 @@ export default function WritePrescription({ user }: Props) {
                                                     ),
                                                 )}
                                             </div>
+                                        </div>
+                                        <div className="mt-4">
+                                            <p className="text-xs text-gray-500">
+                                                Additional Instructions
+                                            </p>
+                                            <p className="font-medium">
+                                                {rx.additionalInstructions
+                                                    ? `${rx.additionalInstructions}`
+                                                    : "NOT SPECIFIED"}
+                                            </p>
+                                        </div>
+                                        <div className="mt-2">
+                                            <p className="text-xs text-gray-500">
+                                                Approximate Price
+                                            </p>
+                                            <p className="font-medium">
+                                                {rx.approximatePrice
+                                                    ? `$${rx.approximatePrice}`
+                                                    : "NOT SPECIFIED"}
+                                            </p>
                                         </div>
                                         <div className="flex mt-6 items-center justify-between">
                                             {/* Status */}

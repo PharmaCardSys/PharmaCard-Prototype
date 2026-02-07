@@ -270,6 +270,26 @@ export default function Prescription() {
                                         </div>
                                     </div>
 
+                                    {/* Additional Display */}
+                                    <div className="mt-4">
+                                        <p className="text-xs text-gray-500">
+                                            Additional Instructions
+                                        </p>
+                                        <p className="font-medium">
+                                            {latestRx.additionalInstructions ||
+                                                "NOT SPECIFIED"}
+                                        </p>
+                                    </div>
+                                    <div className="mt-2">
+                                        <p className="text-xs text-gray-500">
+                                            Approximate Price
+                                        </p>
+                                        <p className="font-medium">
+                                            {latestRx.approximatePrice ||
+                                                "NOT SPECIFIED"}
+                                        </p>
+                                    </div>
+
                                     <hr className="my-6" />
 
                                     {/* Patient Info */}
@@ -463,6 +483,28 @@ export default function Prescription() {
                                                                     ),
                                                                 )}
                                                             </div>
+                                                        </div>
+
+                                                        {/* Additional Display */}
+                                                        <div className="mt-4">
+                                                            <p className="text-xs text-gray-500">
+                                                                Additional
+                                                                Instructions
+                                                            </p>
+                                                            <p className="font-medium">
+                                                                {oldRx.additionalInstructions ||
+                                                                    "NOT SPECIFIED"}
+                                                            </p>
+                                                        </div>
+                                                        <div className="mt-2">
+                                                            <p className="text-xs text-gray-500">
+                                                                Approximate
+                                                                Price
+                                                            </p>
+                                                            <p className="font-medium">
+                                                                {oldRx.approximatePrice ||
+                                                                    "NOT SPECIFIED"}
+                                                            </p>
                                                         </div>
 
                                                         <div className="mt-4 flex justify-between text-sm text-gray-400">
