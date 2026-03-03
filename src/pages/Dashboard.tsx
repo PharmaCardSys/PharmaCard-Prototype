@@ -8,6 +8,7 @@ import { db, auth } from "../firebase/firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import logo from "../assets/images/logo.png";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -72,12 +73,14 @@ export default function Dashboard() {
                     {/* First Card */}
                     <div className="flex flex-col items-center justify-center gap-4 text-center max-w-xl px-4 md:px-0">
                         <h1 className="text-4xl font-bold text-[#214662]">
-                            Smart Prescription Management
+                            PharmaCard Digital Prescription Management
                         </h1>
                         <p className="text-sm text-[#214662]/80">
-                            PharmaCard allows doctors to digitally issue
-                            prescriptions and enables pharmacists to instantly
-                            verify them using NFC cards.
+                            PharmaCard allows individuals to store and view
+                            their prescriptions digitally. It helps doctors
+                            reduce errors in writing prescriptions and enables
+                            pharmacists to read prescriptions more easily and
+                            accurately.
                         </p>
                     </div>
 
@@ -105,7 +108,7 @@ export default function Dashboard() {
                 <div className="container flex flex-col items-center justify-center py-8">
                     <div className="flex flex-col items-center justify-center gap-4">
                         <h1 className="text-2xl font-bold text-[#214662]">
-                            How PharmaCard Works
+                            How to obtain and use PharmaCard
                         </h1>
 
                         {/* Card Section */}
@@ -118,10 +121,13 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <h2 className="text-lg font-semibold text-[#214662]">
-                                    Digital Prescription
+                                    Obtaining A Card
                                 </h2>
                                 <p className="text-sm text-[#214662]/80">
-                                    Doctors create prescriptions digitally.
+                                    You may register for a PharmaCard by
+                                    submitting the required documents to any
+                                    hospital that has adopted the PharmaCard
+                                    system.
                                 </p>
                             </div>
 
@@ -133,10 +139,12 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <h2 className="text-lg font-semibold text-[#214662]">
-                                    NFC Card Verification
+                                    Prescribing By A Doctor
                                 </h2>
                                 <p className="text-sm text-[#214662]/80">
-                                    Pharmacists verify prescriptions instantly.
+                                    During check-ups, simply present your
+                                    PharmaCard to your doctor so they can encode
+                                    a new prescription into the system database.
                                 </p>
                             </div>
 
@@ -148,11 +156,13 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <h2 className="text-lg font-semibold text-[#214662]">
-                                    Secure & Efficient
+                                    Submitting To A Pharmacist
                                 </h2>
                                 <p className="text-sm text-[#214662]/80">
-                                    Secure digital transactions and faster
-                                    processing.
+                                    After the card is returned, users may scan
+                                    it using their phone to view their
+                                    prescription or present it at a pharmacy to
+                                    claim their medication.
                                 </p>
                             </div>
                         </div>
@@ -164,22 +174,56 @@ export default function Dashboard() {
                     {/* Text */}
                     <div className="flex flex-col gap-6 md:w-1/2">
                         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-                            Why is PharmaCard better than traditional
-                            prescribing?
+                            How does PharmaCard benefit its users?
                         </h1>
 
                         <p className="text-sm md:text-base text-[#214662]/80 leading-relaxed">
-                            PharmaCard improves the traditional prescription
-                            workflow by minimizing manual errors, improving
-                            verification speed, and providing a secure digital
-                            reference for both doctors and pharmacists.
+                            A study conducted by Hodkinson et al. (2020) found
+                            that prescribing errors were the largest source of
+                            preventable medication harm, accounting for 58% of
+                            cases. This is supported by the findings of Abunales
+                            et al. (2025) at the Philippine General Hospital,
+                            where prescribing errors accounted for 99.1% of
+                            recorded medication errors, with 1.17% resulting in
+                            harm.
                         </p>
 
                         <p className="text-sm md:text-base text-[#214662]/80 leading-relaxed">
-                            By digitizing prescriptions and linking them through
-                            NFC cards, PharmaCard enables faster validation
-                            while ensuring accuracy and accountability across
-                            healthcare providers.
+                            This capstone project aims to address this issue by
+                            developing a prototype prescription card system
+                            designed to minimize prescribing errors. Based on
+                            our quantitative findings, no prescription coding
+                            errors were observed during testing. However, the
+                            website may still be improved to reduce the current
+                            4% lag rate, which may affect workflow efficiency.
+                        </p>
+
+                        <p className="text-sm md:text-base text-[#214662]/80 leading-relaxed">
+                            Source:
+                            <br />
+                            Abunales, J. L., OrdoñEz, J. R. V., Salandanan, S.
+                            B. B., Ayran, C. M. G., & Reyes-Abaya, R. (2025).
+                            Evaluation of Medication Errors among Inpatients in
+                            a Tertiary Government Hospital's Pulmonary Medicine
+                            Service: A Cross-sectional Retrospective Study. Acta
+                            medica Philippina, 59(9), 40–61.
+                            <br />
+                            <a href="https://doi.org/10.47895/amp.vi0.10684">
+                                https://doi.org/10.47895/amp.vi0.10684
+                            </a>
+                        </p>
+
+                        <p className="text-sm md:text-base text-[#214662]/80 leading-relaxed">
+                            Hodkinson, A., Tyler, N., Ashcroft, D. M., Keers, R.
+                            N., Khan, K., Phipps, D., Abuzour, A., Bower, P.,
+                            Avery, A., Campbell, S., & Panagioti, M. (2020).
+                            Preventable medication harm across health care
+                            settings: a systematic review and meta-analysis. BMC
+                            medicine, 18(1), 313.
+                            <br />
+                            <a href="https://doi.org/10.1186/s12916-020-01774-9">
+                                https://doi.org/10.1186/s12916-020-01774-9
+                            </a>
                         </p>
                     </div>
 
@@ -194,10 +238,22 @@ export default function Dashboard() {
                 </div>
 
                 {/* Last Card Box */}
-                <div className="container mx-auto flex items-center justify-center px-4 mb-16">
-                    <h1 className="text-center text-2xl md:text-3xl font-semibold text-[#214662] max-w-2xl leading-relaxed">
-                        “A smarter way to issue and verify prescriptions.”
-                    </h1>
+                <div className="w-full px-4 mb-16">
+                    <div className="mx-auto max-w-3xl">
+                        <div className="px-5 py-8 sm:px-8 sm:py-10 flex flex-col items-center text-center gap-5">
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#214662] leading-snug">
+                                “Reliable Prescriptions. Simpler Management.”
+                            </h1>
+
+                            <div className="w-full flex justify-center">
+                                <img
+                                    src={logo}
+                                    alt="PharmaCard Logo"
+                                    className="w-[220px] sm:w-[260px] md:w-[320px] h-auto object-contain"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Flex Grow LOl! */}
