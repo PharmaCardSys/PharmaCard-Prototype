@@ -30,13 +30,22 @@ interface Medicine {
     dosage: string;
     frequency: string;
     duration: string;
+    approximatePrice?: string;
+    maximumDispensable?: string;
 }
 
 export default function WritePrescription({ user }: Props) {
     if (!user) return null;
 
     const [medicines, setMedicines] = useState<Medicine[]>([
-        { name: "", dosage: "", frequency: "", duration: "" },
+        {
+            name: "",
+            dosage: "",
+            frequency: "",
+            duration: "",
+            approximatePrice: "",
+            maximumDispensable: "",
+        },
     ]);
     const [patientImage, setPatientImage] = useState<string | null>(null);
     const [hospitalLogo, setHospitalLogo] = useState<string | null>(null);
@@ -51,7 +60,7 @@ export default function WritePrescription({ user }: Props) {
     const [open, setOpen] = useState(false);
     const [prescriptionLink, setPrescriptionLink] = useState("");
     const [additionalInstructions, setAdditionalInstructions] = useState("");
-    const [approximatePrice, setApproximatePrice] = useState("");
+    const [pid, setPid] = useState("");
 
     // const [rx, setRx] = useState<any | null>(null); I dont what this does lol!
     const [previousPrescriptions, setPreviousPrescriptions] = useState<any[]>(
@@ -137,6 +146,7 @@ export default function WritePrescription({ user }: Props) {
             setPatientSex(data.patientSex ?? "");
             setPatientAddress(data.patientAddress ?? "");
             setPatientImage(data.patientImage ?? null);
+            setPid(data.pid ?? "");
 
             toast.success("Prescription loaded");
             setOpen(false);
@@ -149,7 +159,14 @@ export default function WritePrescription({ user }: Props) {
     const addMedicine = () => {
         setMedicines([
             ...medicines,
-            { name: "", dosage: "", frequency: "", duration: "" },
+            {
+                name: "",
+                dosage: "",
+                frequency: "",
+                duration: "",
+                approximatePrice: "",
+                maximumDispensable: "",
+            },
         ]);
     };
 
@@ -224,12 +241,13 @@ export default function WritePrescription({ user }: Props) {
                 status: false,
                 createdAt: Date.now(),
                 additionalInstructions,
-                approximatePrice,
                 prescriptionList: medicines.map((med) => ({
                     medicineName: med.name,
                     dosage: med.dosage,
                     frequency: med.frequency,
                     duration: med.duration,
+                    approximatePrice: med.approximatePrice,
+                    maximumDispensable: med.maximumDispensable,
                 })),
             };
 
@@ -242,6 +260,7 @@ export default function WritePrescription({ user }: Props) {
                     patientAddress,
                     patientImage,
                     mainPrescription: [prescriptionEntry],
+                    pid,
                 },
             );
 
@@ -266,7 +285,9 @@ export default function WritePrescription({ user }: Props) {
             med.name.trim() !== "" ||
             med.dosage.trim() !== "" ||
             med.frequency.trim() !== "" ||
-            med.duration.trim() !== "",
+            med.duration.trim() !== "" ||
+            med.maximumDispensable?.trim() !== "" ||
+            med.approximatePrice?.trim() !== "",
     );
     const hasRequiredPatientInfo =
         patientName.trim() !== "" &&
@@ -286,7 +307,7 @@ export default function WritePrescription({ user }: Props) {
             // BLOCK empty prescription updates
             if (!hasAtLeastOneMedicine) {
                 toast.error(
-                    "Unable to update prescription: No medicines added.",
+                    "Unable to update prescription: No new medicines added.",
                 );
                 return;
             }
@@ -299,12 +320,13 @@ export default function WritePrescription({ user }: Props) {
                 status: false,
                 createdAt: Date.now(),
                 additionalInstructions,
-                approximatePrice,
                 prescriptionList: medicines.map((med) => ({
                     medicineName: med.name,
                     dosage: med.dosage,
                     frequency: med.frequency,
                     duration: med.duration,
+                    approximatePrice: med.approximatePrice,
+                    maximumDispensable: med.maximumDispensable,
                 })),
             };
 
@@ -315,6 +337,7 @@ export default function WritePrescription({ user }: Props) {
                 patientSex,
                 patientAddress,
                 patientImage,
+                pid,
 
                 // append new prescription (immutable history)
                 mainPrescription: arrayUnion(prescriptionEntry),
@@ -333,7 +356,16 @@ export default function WritePrescription({ user }: Props) {
     };
 
     const handleCreateNew = () => {
-        setMedicines([{ name: "", dosage: "", frequency: "", duration: "" }]);
+        setMedicines([
+            {
+                name: "",
+                dosage: "",
+                frequency: "",
+                duration: "",
+                approximatePrice: "",
+                maximumDispensable: "",
+            },
+        ]);
         setPatientImage(null);
         setHospitalLogo(null);
         setHospitalName("");
@@ -344,6 +376,7 @@ export default function WritePrescription({ user }: Props) {
         setPreviousPrescriptions([]);
         setHasLoadedExisting(false);
         setPrescriptionLink("");
+        setPid("");
         toast.success("Successfully cleared the prescription form!");
     };
 
@@ -533,6 +566,34 @@ export default function WritePrescription({ user }: Props) {
                                                     )
                                                 }
                                             />
+
+                                            <input
+                                                type="text"
+                                                placeholder="APPROXIMATE PRICE"
+                                                className="border rounded p-2 text-sm uppercase"
+                                                value={med.approximatePrice}
+                                                onChange={(e) =>
+                                                    updateMedicine(
+                                                        index,
+                                                        "approximatePrice",
+                                                        e.target.value.toUpperCase(),
+                                                    )
+                                                }
+                                            />
+
+                                            <input
+                                                type="text"
+                                                placeholder="MAXIMUM DISPENSABLE"
+                                                className="border rounded p-2 text-sm uppercase"
+                                                value={med.maximumDispensable}
+                                                onChange={(e) =>
+                                                    updateMedicine(
+                                                        index,
+                                                        "maximumDispensable",
+                                                        e.target.value.toUpperCase(),
+                                                    )
+                                                }
+                                            />
                                         </div>
                                     ))}
                                     {/* Additional Instructions */}
@@ -543,18 +604,6 @@ export default function WritePrescription({ user }: Props) {
                                         value={additionalInstructions}
                                         onChange={(e) =>
                                             setAdditionalInstructions(
-                                                e.target.value.toUpperCase(),
-                                            )
-                                        }
-                                    />
-                                    {/* Approximate Price */}
-                                    <input
-                                        type="text"
-                                        className="border rounded p-2 text-sm uppercase w-full"
-                                        placeholder="Approximate Price (optional)"
-                                        value={approximatePrice}
-                                        onChange={(e) =>
-                                            setApproximatePrice(
                                                 e.target.value.toUpperCase(),
                                             )
                                         }
@@ -623,9 +672,8 @@ export default function WritePrescription({ user }: Props) {
                                                                     Medicine
                                                                 </p>
                                                                 <p className="font-medium">
-                                                                    {
-                                                                        med.medicineName
-                                                                    }
+                                                                    {med.medicineName ||
+                                                                        "NOT SPECIFIED"}
                                                                 </p>
                                                             </div>
 
@@ -634,7 +682,8 @@ export default function WritePrescription({ user }: Props) {
                                                                     Dosage
                                                                 </p>
                                                                 <p className="font-medium">
-                                                                    {med.dosage}
+                                                                    {med.dosage ||
+                                                                        "NOT SPECIFIED"}
                                                                 </p>
                                                             </div>
 
@@ -643,9 +692,8 @@ export default function WritePrescription({ user }: Props) {
                                                                     Frequency
                                                                 </p>
                                                                 <p className="font-medium">
-                                                                    {
-                                                                        med.frequency
-                                                                    }
+                                                                    {med.frequency ||
+                                                                        "NOT SPECIFIED"}
                                                                 </p>
                                                             </div>
 
@@ -654,9 +702,30 @@ export default function WritePrescription({ user }: Props) {
                                                                     Duration
                                                                 </p>
                                                                 <p className="font-medium">
-                                                                    {
-                                                                        med.duration
-                                                                    }
+                                                                    {med.duration ||
+                                                                        "NOT SPECIFIED"}
+                                                                </p>
+                                                            </div>
+
+                                                            <div>
+                                                                <p className="text-xs text-gray-500">
+                                                                    Approximate
+                                                                    Price
+                                                                </p>
+                                                                <p className="font-medium">
+                                                                    {med.approximatePrice ||
+                                                                        "NOT SPECIFIED"}
+                                                                </p>
+                                                            </div>
+
+                                                            <div>
+                                                                <p className="text-xs text-gray-500">
+                                                                    Maximum
+                                                                    Dispensable
+                                                                </p>
+                                                                <p className="font-medium">
+                                                                    {med.maximumDispensable ||
+                                                                        "NOT SPECIFIED"}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -671,16 +740,6 @@ export default function WritePrescription({ user }: Props) {
                                             <p className="font-medium">
                                                 {rx.additionalInstructions
                                                     ? `${rx.additionalInstructions}`
-                                                    : "NOT SPECIFIED"}
-                                            </p>
-                                        </div>
-                                        <div className="mt-2">
-                                            <p className="text-xs text-gray-500">
-                                                Approximate Price
-                                            </p>
-                                            <p className="font-medium">
-                                                {rx.approximatePrice
-                                                    ? `$${rx.approximatePrice}`
                                                     : "NOT SPECIFIED"}
                                             </p>
                                         </div>
@@ -795,6 +854,21 @@ export default function WritePrescription({ user }: Props) {
                                         e.target.value.toUpperCase(),
                                     )
                                 }
+                                className="w-full border rounded p-2 text-sm"
+                            />
+
+                            <input
+                                type="password"
+                                placeholder="ENTER 4 DIGIT PIN FOR RFC CARD (optional)"
+                                value={pid}
+                                onChange={(e) => {
+                                    const value = e.target.value
+                                        .replace(/\D/g, "")
+                                        .slice(0, 4);
+                                    setPid(value);
+                                }}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
                                 className="w-full border rounded p-2 text-sm"
                             />
                         </div>

@@ -292,6 +292,28 @@ export default function CheckoutRx({ user }: Props) {
                                                             )}
                                                         </p>
                                                     </div>
+
+                                                    <div>
+                                                        <p className="text-xs text-gray-500">
+                                                            Approximate Price
+                                                        </p>
+                                                        <p className="font-medium text-gray-800">
+                                                            {displayValue(
+                                                                med.approximatePrice,
+                                                            )}
+                                                        </p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="text-xs text-gray-500">
+                                                            Maximum Dispensable
+                                                        </p>
+                                                        <p className="font-medium text-gray-800">
+                                                            {displayValue(
+                                                                med.maximumDispensable,
+                                                            )}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             ),
                                         )}
@@ -305,15 +327,6 @@ export default function CheckoutRx({ user }: Props) {
                                     </p>
                                     <p className="font-medium">
                                         {latestRx.additionalInstructions ||
-                                            "NOT SPECIFIED"}
-                                    </p>
-                                </div>
-                                <div className="mt-2">
-                                    <p className="text-xs text-gray-500">
-                                        Approximate Price
-                                    </p>
-                                    <p className="font-medium">
-                                        {latestRx.approximatePrice ||
                                             "NOT SPECIFIED"}
                                     </p>
                                 </div>
@@ -506,6 +519,30 @@ export default function CheckoutRx({ user }: Props) {
                                                                             )}
                                                                         </p>
                                                                     </div>
+
+                                                                    <div>
+                                                                        <p className="text-xs text-gray-500">
+                                                                            Approximate
+                                                                            Price
+                                                                        </p>
+                                                                        <p className="font-medium">
+                                                                            {displayValue(
+                                                                                med.approximatePrice,
+                                                                            )}
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <p className="text-xs text-gray-500">
+                                                                            Maximum
+                                                                            Dispensable
+                                                                        </p>
+                                                                        <p className="font-medium">
+                                                                            {displayValue(
+                                                                                med.maximumDispensable,
+                                                                            )}
+                                                                        </p>
+                                                                    </div>
                                                                 </div>
                                                             ),
                                                         )}
@@ -519,15 +556,6 @@ export default function CheckoutRx({ user }: Props) {
                                                     </p>
                                                     <p className="font-medium">
                                                         {oldRx.additionalInstructions ||
-                                                            "NOT SPECIFIED"}
-                                                    </p>
-                                                </div>
-                                                <div className="mt-2">
-                                                    <p className="text-xs text-gray-500">
-                                                        Approximate Price
-                                                    </p>
-                                                    <p className="font-medium">
-                                                        {oldRx.approximatePrice ||
                                                             "NOT SPECIFIED"}
                                                     </p>
                                                 </div>
