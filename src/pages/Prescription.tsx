@@ -12,6 +12,10 @@ export default function Prescription() {
     const [value, setValue] = useState("");
 
     const [prescription, setPrescription] = useState<any>(null);
+    const [showPinModal, setShowPinModal] = useState(false);
+    const [pin, setPin] = useState("");
+    const [pendingPid, setPendingPid] = useState<string | null>(null);
+    const [isCheckingPin, setIsCheckingPin] = useState(false);
 
     const displayValue = (value?: string) =>
         value && value.trim() !== "" ? value : "NOT SPECIFIED";
@@ -22,7 +26,7 @@ export default function Prescription() {
     const previousRx =
         latestIndex > 0 ? prescriptions.slice(0, latestIndex) : [];
 
-    // 🔗 Extract ID (same as CheckoutRx)
+    // Extract ID (same as CheckoutRx)
     const extractPrescriptionId = (input: string) => {
         if (!input) return null;
 
@@ -47,34 +51,78 @@ export default function Prescription() {
         const pid = extractPrescriptionId(value);
 
         if (!pid) {
-            console.warn("No prescription ID found");
+            toast.error("Invalid prescription link");
+            return;
+        }
+
+        setPendingPid(pid);
+        setPin("");
+        setShowPinModal(true);
+    };
+
+    const verifyPinAndFetchPrescription = async () => {
+        if (!pendingPid) {
+            toast.error("No prescription selected");
             return;
         }
 
         try {
-            const ref = doc(db, "prescriptions", pid);
-            const snap = await getDoc(ref);
+            setIsCheckingPin(true);
 
-            if (!snap.exists()) {
-                console.warn("Prescription not found");
+            const prescriptionRef = doc(db, "prescriptions", pendingPid);
+            const prescriptionSnap = await getDoc(prescriptionRef);
+
+            if (!prescriptionSnap.exists()) {
+                toast.error("Prescription not found");
                 return;
             }
 
-            const data = snap.data();
+            const prescriptionData = prescriptionSnap.data();
+
+            const savedPin = String(prescriptionData.pid || "").trim();
+            const enteredPin = String(pin || "").trim();
+
+            // If prescription has a PIN, require exact 4-digit match
+            if (savedPin !== "") {
+                if (enteredPin.length !== 4) {
+                    toast.error("Please enter a 4 digit PIN");
+                    return;
+                }
+
+                if (savedPin !== enteredPin) {
+                    toast.error("Wrong 4 Digit Pin, please try again");
+                    return;
+                }
+            }
+
+            // If prescription has NO PIN, allow access even if input is blank
+
             const latest =
-                data.mainPrescription?.[data.mainPrescription.length - 1];
+                prescriptionData.mainPrescription?.[
+                    prescriptionData.mainPrescription.length - 1
+                ];
 
             setPrescription({
-                id: snap.id,
-                ...data,
+                id: prescriptionSnap.id,
+                ...prescriptionData,
                 latestPrescription: latest,
             });
+
+            setShowPinModal(false);
+            setPin("");
+            setPendingPid(null);
+
+            toast.success("Prescription fetched successfully");
         } catch (error) {
-            console.error("Error fetching prescription:", error);
+            console.error(
+                "Error verifying PIN and fetching prescription:",
+                error,
+            );
+            toast.error("Something went wrong, please try again");
+        } finally {
+            setIsCheckingPin(false);
         }
     };
-
-    console.log(prescription);
 
     useEffect(() => {
         // Runs once on page load
@@ -152,7 +200,7 @@ export default function Prescription() {
                         "
                     />
 
-                    {/* 🔥 FIX: Button now works */}
+                    {/* FIX: Button now works */}
                     <button
                         onClick={fetchPrescription}
                         className="
@@ -264,6 +312,30 @@ export default function Prescription() {
                                                                 )}
                                                             </p>
                                                         </div>
+
+                                                        <div>
+                                                            <p className="text-xs text-gray-500">
+                                                                Approximate
+                                                                Price
+                                                            </p>
+                                                            <p className="font-medium text-gray-800">
+                                                                {displayValue(
+                                                                    med.approximatePrice,
+                                                                )}
+                                                            </p>
+                                                        </div>
+
+                                                        <div>
+                                                            <p className="text-xs text-gray-500">
+                                                                Maximum
+                                                                Dispensable
+                                                            </p>
+                                                            <p className="font-medium text-gray-800">
+                                                                {displayValue(
+                                                                    med.maximumDispensable,
+                                                                )}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 ),
                                             )}
@@ -277,15 +349,6 @@ export default function Prescription() {
                                         </p>
                                         <p className="font-medium">
                                             {latestRx.additionalInstructions ||
-                                                "NOT SPECIFIED"}
-                                        </p>
-                                    </div>
-                                    <div className="mt-2">
-                                        <p className="text-xs text-gray-500">
-                                            Approximate Price
-                                        </p>
-                                        <p className="font-medium">
-                                            {latestRx.approximatePrice ||
                                                 "NOT SPECIFIED"}
                                         </p>
                                     </div>
@@ -479,6 +542,30 @@ export default function Prescription() {
                                                                                     )}
                                                                                 </p>
                                                                             </div>
+
+                                                                            <div>
+                                                                                <p className="text-xs text-gray-500">
+                                                                                    Approximate
+                                                                                    Price
+                                                                                </p>
+                                                                                <p className="font-medium">
+                                                                                    {displayValue(
+                                                                                        med.approximatePrice,
+                                                                                    )}
+                                                                                </p>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <p className="text-xs text-gray-500">
+                                                                                    Maximum
+                                                                                    Dispensable
+                                                                                </p>
+                                                                                <p className="font-medium">
+                                                                                    {displayValue(
+                                                                                        med.maximumDispensable,
+                                                                                    )}
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
                                                                     ),
                                                                 )}
@@ -493,16 +580,6 @@ export default function Prescription() {
                                                             </p>
                                                             <p className="font-medium">
                                                                 {oldRx.additionalInstructions ||
-                                                                    "NOT SPECIFIED"}
-                                                            </p>
-                                                        </div>
-                                                        <div className="mt-2">
-                                                            <p className="text-xs text-gray-500">
-                                                                Approximate
-                                                                Price
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {oldRx.approximatePrice ||
                                                                     "NOT SPECIFIED"}
                                                             </p>
                                                         </div>
@@ -544,6 +621,58 @@ export default function Prescription() {
                         );
                     })()}
             </div>
+            {showPinModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                    <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                        <h2 className="text-xl font-semibold text-[#214662] text-center">
+                            Enter 4 Digit PIN
+                        </h2>
+
+                        <p className="text-sm text-gray-500 text-center mt-2">
+                            Please enter your PharmaCard PIN to view this
+                            prescription.
+                        </p>
+
+                        <input
+                            type="password"
+                            placeholder=""
+                            value={pin}
+                            onChange={(e) => {
+                                const value = e.target.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 4);
+                                setPin(value);
+                            }}
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={4}
+                            className="w-full border rounded-lg p-3 text-sm mt-4 text-center tracking-[0.4em]"
+                        />
+
+                        <div className="flex gap-3 mt-5">
+                            <button
+                                onClick={() => {
+                                    setShowPinModal(false);
+                                    setPin("");
+                                    setPendingPid(null);
+                                }}
+                                className="flex-1 border border-gray-300 rounded-lg py-2 text-sm hover:bg-gray-50"
+                                disabled={isCheckingPin}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={verifyPinAndFetchPrescription}
+                                className="flex-1 bg-[#214662] text-white rounded-lg py-2 text-sm hover:bg-[#214662]/90 disabled:opacity-50"
+                                disabled={isCheckingPin}
+                            >
+                                {isCheckingPin ? "Checking..." : "Confirm"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
